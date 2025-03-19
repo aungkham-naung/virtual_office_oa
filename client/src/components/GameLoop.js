@@ -26,13 +26,40 @@ const GameLoop = ({ children, allCharactersData }) => {
   const moveMyCharacter = useCallback(
     (e) => {
       var currentPosition = mycharacterData.position;
-
+      const atEnd = checkMapCollision(currentPosition.x, currentPosition.y);
+      console.log(atEnd);
       console.log("current:", currentPosition);
       const key = e.key;
       if (MOVE_DIRECTIONS[key]) {
         // ***********************************************
         // TODO: Add your move logic here
+        // y = 0 -- cannot "w"
+        // y = 24 -- cannot "s"
+        // x = 0 -- cannot "a"
+        // x = 24 -- cannot "d"
+
+        /* 
+        export const MOVE_DIRECTIONS = {
+            w: [0, -1],
+            a: [-1, 0],
+            s: [0, 1],
+            d: [1, 0],
+            };
+        */
+
         const [x, y] = MOVE_DIRECTIONS[key];
+
+        if (currentPosition.x === 0 && x < 0) {
+          return;
+        } else if (currentPosition.x === 24 && x > 0) {
+          return;
+        }
+
+        if (currentPosition.y === 0 && y < 0) {
+          return;
+        } else if (currentPosition.y === 24 && y > 0) {
+          return;
+        }
 
         const newPosition = {
           x: currentPosition.x + x,
