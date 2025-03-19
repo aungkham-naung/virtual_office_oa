@@ -49,23 +49,26 @@ const GameLoop = ({ children, allCharactersData }) => {
 
         const [x, y] = MOVE_DIRECTIONS[key];
 
-        if (currentPosition.x === 0 && x < 0) {
-          return;
-        } else if (currentPosition.x === 24 && x > 0) {
-          return;
-        }
+        // if (currentPosition.x === 0 && x < 0) {
+        //   return;
+        // } else if (currentPosition.x === 24 && x > 0) {
+        //   return;
+        // }
 
-        if (currentPosition.y === 0 && y < 0) {
-          return;
-        } else if (currentPosition.y === 24 && y > 0) {
-          return;
-        }
+        // if (currentPosition.y === 0 && y < 0) {
+        //   return;
+        // } else if (currentPosition.y === 24 && y > 0) {
+        //   return;
+        // }
 
         const newPosition = {
           x: currentPosition.x + x,
           y: currentPosition.y + y
         };
-        // console.log("new position:", newPosition);
+
+        if (checkMapCollision(newPosition.x, newPosition.y)) {
+          return;
+        }
 
         const updatedUserList = {
           ...allCharactersData,
