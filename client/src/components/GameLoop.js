@@ -8,6 +8,7 @@ import { update } from "./slices/allCharactersSlice";
 import { MOVE_DIRECTIONS, MAP_DIMENSIONS, TILE_SIZE } from "./mapConstants";
 import { MY_CHARACTER_INIT_CONFIG } from "./characterConstants";
 import { checkMapCollision } from "./utils";
+import { writeUsersData } from "../firebase/firebase";
 
 const GameLoop = ({ children, allCharactersData }) => {
   const canvasRef = useRef(null);
@@ -26,9 +27,9 @@ const GameLoop = ({ children, allCharactersData }) => {
   const moveMyCharacter = useCallback(
     (e) => {
       var currentPosition = mycharacterData.position;
-      const atEnd = checkMapCollision(currentPosition.x, currentPosition.y);
-      console.log(atEnd);
-      console.log("current:", currentPosition);
+      // const atEnd = checkMapCollision(currentPosition.x, currentPosition.y);
+      // console.log(atEnd);
+      // console.log("current:", currentPosition);
       const key = e.key;
       if (MOVE_DIRECTIONS[key]) {
         // ***********************************************
@@ -70,19 +71,19 @@ const GameLoop = ({ children, allCharactersData }) => {
           return;
         }
 
-        const updatedUserList = {
-          ...allCharactersData,
-          [MY_CHARACTER_INIT_CONFIG.id]: {
-            ...mycharacterData,
-            position: newPosition
-          }
-        };
+        // const updatedUserList = {
+        //   ...allCharactersData,
+        //   [MY_CHARACTER_INIT_CONFIG.id]: {
+        //     ...mycharacterData,
+        //     position: newPosition
+        //   }
+        // };
 
-        dispatch(update(updatedUserList));
+        // dispatch(update(updatedUserList));
         // console.log("updated user:", updatedUserList);
       }
     },
-    [mycharacterData, allCharactersData, dispatch]
+    [mycharacterData]
   );
 
   const tick = useCallback(() => {
