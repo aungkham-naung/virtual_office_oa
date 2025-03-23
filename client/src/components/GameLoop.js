@@ -71,6 +71,14 @@ const GameLoop = ({ children, allCharactersData }) => {
           return;
         }
 
+        writeUsersData(
+          mycharacterData.name,
+          mycharacterData.id,
+          newPosition,
+          mycharacterData.characterClass,
+          mycharacterData.socketId
+        );
+
         // const updatedUserList = {
         //   ...allCharactersData,
         //   [MY_CHARACTER_INIT_CONFIG.id]: {
