@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import { connect } from "react-redux";
 
-import CanvasConext from "./CanvasContext";
+import CanvasContext from "./CanvasContext";
 import {
   CHARACTER_IMAGE_SIZE,
   CHARACTER_CLASSES_MAP
@@ -18,7 +18,7 @@ function MyCharacter({
   updateAllCharactersData,
   webrtcSocket
 }) {
-  const context = useContext(CanvasConext);
+  const context = useContext(CanvasContext);
   useEffect(() => {
     const { name, id, position, characterClass } = MY_CHARACTER_INIT_CONFIG;
     writeUsersData(name, id, position, characterClass, webrtcSocket.id);
