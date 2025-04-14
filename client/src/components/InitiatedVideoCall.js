@@ -1,31 +1,36 @@
-import React, {useCallback, useEffect, useRef} from 'react'
-import Peer from 'simple-peer'
+import {useCallback, useEffect, useRef} from "react";
+import Peer from "simple-peer";
 
-function InitiatedVideoCall({mySocketId, myStream, othersSocketId, webrtcSocket}) {
+function InitiatedVideoCall({ myStream, webrtcSocket, othersSocketId, mySocketId }) {
+  // Reference to store the Peer instance
   const peerRef = useRef(null);
   
+  // Function to create a new Peer instance and does not get recreate on every render
   const createPeer = useCallback((othersSocketId, mySocketId, myStream, webrtcSocket) => {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      stream: myStream
+      stream: myStream,
     });
+    
+    // Sending signal to the server under the event 'sendSignal'
     peer.on('signal', (signal) => {
-      webrtcSocket.emit('sendOffer', {
-        callToUserSocketId: othersSocketId,
-        callFromUserSocketId: mySocketId,
-        offerSignal: signal
-      });
-    });
+      webrtcSocket.emit('sendSignal', {
+        toUser: othersSocketId,
+        fromUser: mySocketId,
+        offer: signal
+      })
+    })
     
     return peer;
   }, []);
   
+  // Creates a new Peer instance when the component mounts or when the dependencies change
   useEffect(() => {
-    peerRef.current = createPeer(othersSocketId, mySocketId, myStream, webrtcSocket)
-  }, [mySocketId, myStream, othersSocketId, webrtcSocket]);
+    peerRef.current = createPeer(othersSocketId, mySocketId, myStream, webrtcSocket);
+  }, [othersSocketId, mySocketId, myStream, webrtcSocket]);
   
-  return <></>;
+  return <></>
 }
 
-export default InitiatedVideoCall
+export default InitiatedVideoCall;

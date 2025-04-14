@@ -15,10 +15,15 @@ app.get('/', (req, res) => {
 });
 
 io.on("connection", (socket) => {
-    socket.emit("me", socket.id);
-    socket.on("sendOffer", ({callToUserSocketId, callFromUserSocketId, offerSignal}) => {
-        console.log("sending offer from", callFromUserSocketId, "to", callToUserSocketId);
-        io.to(callToUserSocketId).emit("offerReceived", {signal: offerSignal, from: callFromUserSocketId});
+    socket.emit("me", socket.id); // testing socket connection
+    
+    socket.on("sendSignal", ({toUser, fromUser, offer}) => {
+        // Logging the signal received from the client
+        console.log("Signal is receivied in server from client", fromUser, " to ", toUser);
+        
+        // Server forwarding the signal to the intended recipient
+        io.to(toUser).emit("forwardSignal", {offer: offer, fromUser: fromUser});
     })
+
 });
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
