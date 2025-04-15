@@ -17,12 +17,22 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
     socket.emit("me", socket.id); // testing socket connection
     
+    // Server getting signal from client A under "sendSignal" event
     socket.on("sendSignal", ({toUser, fromUser, offer}) => {
-        // Logging the signal received from the client
-        console.log("Signal is receivied in server from client", fromUser, " to ", toUser);
+        // Logging the signal received from the client A
+        console.log("Signal is received in server from client", fromUser, " to ", toUser);
         
         // Server forwarding the signal to the intended recipient
         io.to(toUser).emit("forwardSignal", {offer: offer, fromUser: fromUser});
+    })
+    
+    // Server getting returned signal from client B under "sendReturnedSignal" event
+    socket.on("sendReturnedSignal", ({toUser, fromUser, offer}) => {
+        // Logging the signal returned received from the client B
+        console.log("Signal is received in server from client", fromUser, " to ", toUser);
+        
+        // Server forwarding the signal back to the intended recipient
+        io.to(toUser).emit("forwardReturnedSignal", {offer: offer, fromUser: fromUser});
     })
 
 });

@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import MyVideo from "./MyVideo";
 import InitiatedVideoCall from "./InitiatedVideoCall";
+import ReceivedVideoCall from "./ReceivedVideoCall";
 
 function VideoCalls({webrtcSocket, myCharacterData, otherCharactersData}) {
   const [myStream, setMyStream] = useState(null); // state to hold the video stream
@@ -16,7 +17,7 @@ function VideoCalls({webrtcSocket, myCharacterData, otherCharactersData}) {
       });
   }, []);
   
-  // Capture forwarded signal from the server
+  // Capture forwarded signal from the server (from Client A to Client B)
   useEffect(() => {
     webrtcSocket.on('forwardSignal', (data) => {
       console.log(data)
@@ -27,13 +28,22 @@ function VideoCalls({webrtcSocket, myCharacterData, otherCharactersData}) {
         });
       }
     });
-  }, [webrtcSocket, incomingSignals]);
+  }, [webrtcSocket]);
+  
+  // Capture returned signal from the server (from Client B to Client A)
+  useEffect(() => {
+    webrtcSocket.on('forwardReturnedSignal', (data) => {
+      console.log(data)
+    });
+  }, [webrtcSocket]);
   
   // Log incoming signals to the console
-  useEffect(() => {
-    console.log("Updated incoming signals:", incomingSignals);
-  }, [incomingSignals]);
+  // useEffect(() => {
+  //   console.log("Updated incoming signals:", incomingSignals);
+  // }, [incomingSignals]);
   
+  
+  // Filter out the characters to call
   const myUserId = myCharacterData?.id
   const usersToCall = Object.keys(otherCharactersData)
     .filter((otherUsersId) => otherUsersId >= myUserId)
@@ -57,6 +67,27 @@ function VideoCalls({webrtcSocket, myCharacterData, otherCharactersData}) {
             othersSocketId={userData.socketId}
           />
         );
+      })}
+      
+      // Render the received video calls
+      {Object.keys(incomingSignals).map((othersSocketId) => {
+        const duplicateId = Object.keys(otherCharactersData)
+          .filter((otherUsersId) => otherCharactersData[otherUsersId].socketId === othersSocketId)
+        console.assert(
+          duplicateId.length === 1,
+          "Unexpected duplicate socket ID found in incoming signals",
+          duplicateId
+        )
+        
+        return (
+          <ReceivedVideoCall
+            key={othersSocketId}
+            mySocketId={myCharacterData.socketId}
+            myStream={myStream}
+            webrtcSocket={webrtcSocket}
+            othersSocketId={othersSocketId}
+            offer={incomingSignals[othersSocketId]} />
+        )
       })}
     </>
   )
