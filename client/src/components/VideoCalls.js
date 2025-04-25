@@ -69,7 +69,6 @@ function VideoCalls({webrtcSocket, myCharacterData, otherCharactersData}) {
         );
       })}
       
-      // Render the received video calls
       {Object.keys(incomingSignals).map((othersSocketId) => {
         const duplicateId = Object.keys(otherCharactersData)
           .filter((otherUsersId) => otherCharactersData[otherUsersId].socketId === othersSocketId)
